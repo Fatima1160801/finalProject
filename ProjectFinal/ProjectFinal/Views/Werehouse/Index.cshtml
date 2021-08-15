@@ -1,0 +1,480 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    System.Data.DataView Werehouses = ViewBag.Werehouses;
+    System.Data.DataView Cities = ViewBag.Cities;
+    System.Data.DataView Countries = ViewBag.Countries;
+    System.Data.DataView States = ViewBag.States;
+    System.Data.DataView Types = ViewBag.Types;
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+}
+
+
+<section class="mb-4">
+
+    <div id="a" class="row ">
+        <h2 class="h1-responsive font-weight-bold text-center my-4">ADD New Werehouse</h2><br /><br />
+
+        <div class="col-md-9 mb-md-0 mb-5">
+            <form id="contact-form" name="contact-form">
+                    <div class="row">
+
+                        <div class="col-md-6 ">
+                            <div class="md-form mb-0">
+                                <label for="Id" class="">Werehose Id</label>
+                                <input type="text" id="inputID" name="Id" class="form-control" >
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6 ">
+                            <div class="md-form mb-0">
+                                <label for="name" class="">Werehose Name</label>
+                                <input type="text" id="inputName" name="name" class="form-control" required>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="md-form mb-0">
+                                <label for="type">Werehouse Type:</label><br />
+                                <select id="inputType" required>
+                                    @{
+                                        foreach (System.Data.DataRowView rowView in Types)
+                                        {
+                                            System.Data.DataRow row = rowView.Row;
+                                            <option value=" @row["WEREHOUSE_TYPE_ID"]">
+                                                @row["WEREHOUSE_TYPE_NAME"]
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="md-form mb-0">
+                                <label for="Address" class=""> Address </label>
+                                <input type="text" id="inputAddress" name="Address" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+
+                            <div class="md-form  mb-0">
+                                <label for="telephone"> Telephone</label>
+                                <input type="number" id="inputTelephone" name="telephone" class="form-control" required>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="md-form">
+                                <label for="AreChecked"> Defulte Werehouse:</label><br />
+                                <input id="AreChecked" name="AreChecked" type="checkbox" value="true" /> Defulte<br />
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="md-form mb-4">
+                                <label for="country">Choose Country:</label>
+
+                                <select id="country">
+                                    @{
+                                        foreach (System.Data.DataRowView rowView in Countries)
+                                        {
+                                            System.Data.DataRow row = rowView.Row;
+                                            <option value=" @row["WEREHOUSE_COUNTRY_ID"]">
+                                                @row["WEREHOUSE_COUNTRY_NAME"]
+
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="md-form mb-4">
+                                <label for="state">Choose State:</label>
+
+                                <select id="state">
+                                    @{
+                                        foreach (System.Data.DataRowView rowView in States)
+                                        {
+                                            System.Data.DataRow row = rowView.Row;
+                                            <option value=" @row["WEREHOUSE_STATE_ID"]">
+                                                @row["WEREHOUSE_STATE_NAME"]
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="md-form mb-4">
+                                <label for="city">Choose City:</label>
+                                <select id="city">
+                                    @{
+                                        foreach (System.Data.DataRowView rowView in Cities)
+                                        {
+                                            System.Data.DataRow row = rowView.Row;
+                                            <option value=" @row["WEREHOUSE_CITY_ID"]">
+                                                @row["WEREHOUSE_CITY_NAME"]
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+            <div class="row">
+                <div class="text-center text-md-left">
+                    <button id="submitbutton" type="submit" class="btn btn-default" style="background-color: dimgrey">Save</button>
+                    <button id="updatebutton" type="submit" class="btn btn-default" style="background-color: dimgrey"> Update</button>
+                    <button id="cancelbutton" type="reset" class="btn btn-default" style="background-color: dimgrey"> Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<div>
+    <table id="datatable" class="table table-striped table-dark">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Adress</th>
+                <th scope="col">Telephone</th>
+                <th scope="col">Defulte</th>
+                <th scope="col">Type</th>
+                <th scope="col">Country</th>
+                <th scope="col">State</th>
+                <th scope="col">City</th>
+                <th scope="col">Actions</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (System.Data.DataRowView rowView in Werehouses)
+                {
+                    System.Data.DataRow row = rowView.Row;
+                    <tr>
+
+                        <td class="text-center sorting">@row["WEREHOUSE_ID"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_NAME"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_ADDRESS"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_TELEPHON"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_DEFULTE"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_TYPE_ID"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_COUNTRY_ID"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_STATE_ID"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_CITY_ID"]</td>
+
+                        <td class="text-center sorting">
+                            <i class="fa fa-close deleteIcon" style="cursor:pointer" ; data-id='@row["WEREHOUSE_ID"]'></i>
+                            <i class="fa fa-pencil fa-fw" id="edit" style="cursor:pointer" ; data-id='@row["WEREHOUSE_ID"]' data-name="@row["WEREHOUSE_NAME"]" data-address="@row["WEREHOUSE_ADDRESS"]" data-telephon="@row["WEREHOUSE_TELEPHON"]" data-typeid="@row["WEREHOUSE_TYPE_ID"]" data-countryid="@row["WEREHOUSE_COUNTRY_ID"]" data-stateid="@row["WEREHOUSE_STATE_ID"]" data-cityid="@row["WEREHOUSE_STATE_ID"]" data-defulte="@row["WEREHOUSE_DEFULTE"]" ></i>
+                        </td>
+
+
+                    </tr>
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).on("click", ".deleteIcon", function () {
+                var WerehouseID = $(this).attr('data-id');
+                $(this).closest('tr').css('background-color', 'red').remove;
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "/Werehouse/DeleteWerehouse",
+                    data: {
+                        WEREHOUSE_ID: WerehouseID
+                    },
+                    success: function (data) {
+                        
+                      
+
+                        if (data == 1) {
+                            alert("Werehouse Deleted Successfuly");
+                            getData();
+                        }
+                            
+                        else
+                            alert("This werehouse can not be deleted");
+                       
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+
+                });
+            });
+
+
+
+
+        $(document).on("click", "#submitbutton", function () {
+
+            var input1 = $("#inputID").val();
+            var input2 = $("#inputName").val();
+            var input3 = $("#inputAddress").val();
+            var input4 = $("#inputTelephone").val();
+            var input5;
+
+            $("input[type=checkbox]").change(function () {
+                if ($(this).prop("checked")) {
+                    input5 = 1;
+                } else {
+                    input5 = 0;
+                }
+            });
+
+            var input6 = $('#inputType option:selected').val();
+            var input7 = $('#country option:selected').val();
+            var input8 = $('#state option:selected').val();
+            var input9 = $('#city option:selected').val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Werehouse/AddWerehouse",
+                data: {
+                    WEREHOUSE_ID: input1,
+                    WEREHOUSE_NAME: input2,
+                    WEREHOUSE_ADDRESS: input3,
+                    WEREHOUSE_TELEPHON: input4,
+                    WEREHOUSE_DEFULTE: input5,
+                    WEREHOUSE_TYPE_ID: input6,
+                    WEREHOUSE_COUNTRY_ID: input7,
+                    WEREHOUSE_STATE_ID: input8,
+                    WEREHOUSE_CITY_ID: input9
+                },
+                success: function (data) {
+                    alert("Werehouse Added Successfuly");
+                    getData();
+
+                }
+                ,
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        });
+
+            $(document).on("click", "#cancelbutton", function () {
+                $("#inputID").val(null);
+                $("#inputName").val(null);
+                $("#inputAddress").val(null);
+                $("#inputTelephone").val(null);
+                $("#country").val(null);
+                $("#city").val(null);
+                $("#state").val(null);
+                $("#inputType").val(null);
+             
+                $.ajax({
+                    data: {
+                       
+                    },
+                    success: function (data) {
+                        alert("Canceled");
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+
+                });
+            });
+            
+            $(document).on("click", "#updatebutton", function () {
+                          
+
+                var input1 = $("#inputID").val();
+                var input2 = $("#inputName").val();
+                var input3 = $("#inputAddress").val();
+                var input4 = $("#inputTelephone").val();
+                var input5;
+
+                $("input[type=checkbox]").change(function () {
+                    if ($(this).prop("checked")) {
+                        input5 = 1;
+                    } else {
+                        input5 = 0;
+                    }
+                });
+
+                var input6 = $('#inputType option:selected').val();
+                var input7 = $('#country option:selected').val();
+                var input8 = $('#state option:selected').val();
+                var input9 = $('#city option:selected').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Werehouse/AddWerehouse",
+                    data: {
+                        WEREHOUSE_ID: input1,
+                        WEREHOUSE_NAME: input2,
+                        WEREHOUSE_ADDRESS: input3,
+                        WEREHOUSE_TELEPHON: input4,
+                        WEREHOUSE_DEFULTE: input5,
+                        WEREHOUSE_TYPE_ID: input6,
+                        WEREHOUSE_COUNTRY_ID: input7,
+                        WEREHOUSE_STATE_ID: input8,
+                        WEREHOUSE_CITY_ID: input9
+                    },
+                    success: function (data) {
+                        alert("Werehouse Added Successfuly");
+                        getData();
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+
+            $(document).on("change", "#country", function () {
+                var input = $('#country option:selected').val(); alert(input);
+                $.ajax({
+                    type: "GET",
+                    url: "/States/GetStates",
+                    data: {
+                        WEREHOUSE_COUNTRY_ID:input
+                    },
+                    success: function (data) {
+                        $("#state").empty();
+                        /*  getData();*/
+                        $.each(data, function (index, value) {
+                            $("#state").append('<option value=' + value.WEREHOUSE_STATE_ID + '>' + value.WEREHOUSE_STATE_NAME + '</option>');
+                        });
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+
+            $(document).on("change", "#state", function () {
+                var input = $('#state option:selected').val(); alert(input);
+                $.ajax({
+                    type: "GET",
+                    url: "/Cities/GetCities",
+                    data: {
+                        WEREHOUSE_STATE_ID: input
+                    },
+                    success: function (data) {
+                        $("#city").empty();
+                        /*  getData();*/
+                        $.each(data, function (index, value) {
+                            $("#city").append('<option value=' + value.WEREHOUSE_CITY_ID + '>' + value.WEREHOUSE_CITY_NAME + '</option>');
+                        });
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+
+            $(document).on("click", "#edit", function () {
+                var WEREHOUSE_ID = $(this).attr('data-id');
+                var WEREHOUSE_NAME = $(this).attr('data-name');
+                var WEREHOUSE_ADDRESS = $(this).attr('data-address');
+                var WEREHOUSE_TELEPHON = $(this).attr('data-telephon');
+                var WEREHOUSE_TYPE_ID = $(this).attr('data-typeid');
+                var WEREHOUSE_COUNTRY_ID = $(this).attr('data-countryid');
+                var WEREHOUSE_STATE_ID = $(this).attr('data-stateid');
+                var WEREHOUSE_CITY_ID = $(this).attr('data-cityid');
+                var WEREHOUSE_DEFULTE = $(this).attr('data-defulte');
+
+                document.getElementById("inputID").value = WEREHOUSE_ID;
+                document.getElementById("inputName").value = WEREHOUSE_NAME;
+                document.getElementById("inputAddress").value = WEREHOUSE_ADDRESS;
+                document.getElementById("inputTelephone").value = WEREHOUSE_TELEPHON;
+                document.getElementById("inputType").value = WEREHOUSE_TYPE_ID;
+                document.getElementById("country").value = WEREHOUSE_COUNTRY_ID;
+                document.getElementById("state").value = WEREHOUSE_STATE_ID;
+                document.getElementById("city").value = WEREHOUSE_CITY_ID;
+                document.getElementById("AreChecked").value = WEREHOUSE_DEFULTE;
+
+
+             
+            });
+
+
+    function getData() {
+
+        $.ajax({
+            type: "GET",
+            url: "/Werehouse/GetWerehouse" @*@Url.Action("SaveWerehouse", "Werehouse") *@,
+        success: function (data) {
+            $("#datatable tbody").empty();
+            $.each(data, function (i, data11) {
+                row = '<tr><td class="text-center sorting">' + data11.WEREHOUSE_ID + '</td> <td class="text-center sorting">' + data11.WEREHOUSE_NAME + '</td><td class="text-center sorting">' + data11.WEREHOUSE_ADDRESS + '</td><td class="text-center sorting">' + data11.WEREHOUSE_TELEPHON + '</td><td class="text-center sorting">' + data11.WEREHOUSE_DEFULTE + '</td><td class="text-center sorting">' + data11.WEREHOUSE_TYPE_ID + '</td><td class="text-center sorting">' + data11.WEREHOUSE_COUNTRY_ID + '</td><td class="text-center sorting">' + data11.WEREHOUSE_SATAE_ID + '</td><td class="text-center sorting">' + data11.WEREHOUSE_CITY_ID + '</td>< td class="text-center sorting" > <i class="fa fa-close deleteIcon" style="cursor:pointer"; data - id=' + data11.WEREHOUSE_ID + ' ></i ><i class="fa fa-pencil fa-fw" id="edit" style="cursor:pointer" ; data-id=' + data11.WEREHOUSE_ID +'> </i></td ></tr > '
+                // datatable+='</tbody></table>';
+
+
+                $("#datatable tbody").append(row);
+            });
+            /*   $("#datatable").dataTable();*/
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+            }
+        </script>
+    }
+
+
+}
+

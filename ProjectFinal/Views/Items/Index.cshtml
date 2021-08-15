@@ -1,0 +1,260 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    System.Data.DataView Items = ViewBag.Items;
+    System.Data.DataView Werehouses = ViewBag.Werehouses;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+}
+
+
+<section class="mb-4">
+
+    <div id="a" class="row ">
+        <h2 class="h1-responsive font-weight-bold text-center my-4">ADD New ITEM</h2><br /><br />
+
+        <div class="col-md-9 mb-md-0 mb-5">
+            @*<form id="contact-form" name="contact-form">*@
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form mb-0">
+                            <label for="itemid" class=""> Item ID </label>
+                            <input type="text" id="inputID" name="itemid" class="form-control">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="md-form  mb-0">
+                            <label for="name"> Item Name</label>
+                            <input type="text" id="inputName" name="name" class="form-control">
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form mb-4">
+                            <label for="werehouse">Werehouse Name:</label>
+
+                            <select id="werehouse">
+                                @{
+                                    foreach (System.Data.DataRowView rowView in Werehouses)
+                                    {
+                                        System.Data.DataRow row = rowView.Row;
+                                        <option value="@row["WEREHOUSE_ID"]">
+                                            @row["WEREHOUSE_NAME"]
+
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text-center text-md-left">
+                    <button id="submitbutton" type="submit" class="btn btn-default" style="background-color: dimgrey">Save</button>
+                    <button id="updatebutton" type="submit" class="btn btn-default" style="background-color: dimgrey"> Update</button>
+                    <button id="cancelbutton" type="reset" class="btn btn-default" style="background-color: dimgrey"> Cancel</button>
+                </div>
+            @*</form>*@
+        </div>
+    </div>
+</section>
+
+<div>
+    <table id="datatable" class="table table-striped table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Item ID</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Werehouse ID</th>
+                <th scope="col">Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (System.Data.DataRowView rowView in Items)
+                {
+                    System.Data.DataRow row = rowView.Row;
+                    <tr>
+
+                        <td class="text-center sorting">@row["ITEM_ID"]</td>
+                        <td class="text-center sorting">@row["ITEM_NAME"]</td>
+                        <td class="text-center sorting">@row["WEREHOUSE_ID"]</td>
+
+                        <td class="text-center sorting">
+                            <i class="fa fa-close deleteIcon" style="cursor:pointer" ; data-id='@row["ITEM_ID"]'></i>
+                            <i class="fa fa-pencil fa-fw" id="edit" style="cursor:pointer" ; data-Iid='@row["ITEM_ID"]' data-name="@row["ITEM_NAME"]" data-Wid="@row["WEREHOUSE_ID"]" ></i>
+
+                        </td>
+                    </tr>
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).on("click", ".deleteIcon", function () {
+                var itemID = $(this).attr('data-id');
+                $(this).closest('tr').css('background-color', 'red').remove;
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "/Items/DeleteItem",
+                    data: {
+                        ITEM_ID: itemID
+                    },
+                    success: function (data) {
+
+                        getData();
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+
+                });
+            });
+
+
+
+
+            $(document).on("click", "#submitbutton", function () {
+
+            var input1 = $("#inputID").val();
+            var input2 = $("#inputName").val();
+
+            var input3 = $('#werehouse option:selected').val();
+
+            $.ajax({
+                type: "POST",
+                url: "Items/AddItem",
+                data: {
+                    ITEM_ID: input1,
+                    ITEM_NAME: input2,
+                    WEREHOUSE_ID: input3
+                },
+                success: function (data) {
+
+                    getData();
+
+                }
+                ,
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+            });
+
+
+
+            $(document).on("click", "#updatebutton", function () {
+                var input1 = $("#inputID").val();
+                var input2 = $("#inputName").val();
+                var input3 = $('select#werehouse option:selected').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Items/UpdateItem",
+                    data: {
+                        ITEM_ID: input1,
+                        ITEM_NAME: input2,
+                        WEREHOUSE_ID: input3
+                    },
+                    success: function (data) {
+
+                        getData();
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+
+            $(document).on("click", "#edit", function () {
+                var WEREHOUSE_ID = $(this).attr('data-Wid');
+                var ITEM_NAME = $(this).attr('data-name');
+                var ITEM_ID = $(this).attr('data-Iid');
+                
+
+                document.getElementById("inputID").value = ITEM_ID;
+                document.getElementById("inputName").value = ITEM_NAME;
+                document.getElementById("werehouse").value = WEREHOUSE_ID;
+                
+
+
+
+            });
+
+            $(document).on("click", "#cancelbutton", function () {
+                $("#inputID").val(null);
+                $("#inputName").val(null);
+                $("#werehouse").val(null);
+               
+
+                $.ajax({
+                    data: {
+
+                    },
+                    success: function (data) {
+                        alert("Canceled");
+
+                    }
+                    ,
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+
+                });
+            });
+    function getData() {
+
+        $.ajax({
+            type: "GET",
+            url: "/Items/GetItems" @*@Url.Action("SaveItem", "Items") *@,
+        success: function (data) {
+            $("#datatable tbody").empty();
+            $.each(data, function (i, data11) {
+                row = '<tr><td class="text-center sorting">' + data11.ITEM_ID + '</td> <td class="text-center sorting">' + data11.ITEM_NAME + '</td><td class="text-center sorting">' + data11.WEREHOUSE_ID + '</td>< td class="text-center sorting" > <i class="fa fa-close deleteIcon" style="cursor:pointer"; data - id=' + data11.ITEM_ID + ' ></i ></td ></tr > '
+                // datatable+='</tbody></table>';
+
+
+                $("#datatable tbody").append(row);
+            });
+            /*   $("#datatable").dataTable();*/
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+            }
+        </script>
+    }
+
+
+}
+
